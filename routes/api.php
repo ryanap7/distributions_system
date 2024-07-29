@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DistributionController;
+use App\Http\Controllers\Api\LogController;
 use App\Http\Controllers\Api\RecipientController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::get('/recipients', [RecipientController::class, 'show']);
+
+    Route::get('logs/{userId}', [LogController::class, 'getLogsByUserId']);
+
 
     Route::get('/distributions', [DistributionController::class, 'show']);
     Route::post('/distributions', [DistributionController::class, 'create']);
