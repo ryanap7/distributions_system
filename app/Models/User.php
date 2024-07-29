@@ -60,7 +60,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(Village::class);
     }
 
-    // Customize the JSON response
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
+    }
+
     public function toArray()
     {
         $array = parent::toArray();

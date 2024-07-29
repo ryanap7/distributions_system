@@ -29,4 +29,20 @@ class Recipient extends Model
     {
         return $this->hasMany(Distribution::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
+    }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        unset($array['village_id']);
+        unset($array['created_at']);
+        unset($array['updated_at']);
+
+        return $array;
+    }
 }

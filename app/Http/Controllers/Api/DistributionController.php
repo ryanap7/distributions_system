@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Models\Distribution;
+use App\Models\Log;
 use App\Models\Recipient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -30,8 +31,8 @@ class DistributionController extends Controller
             'date' => 'required|date',
             'stage' => 'required|integer',
             'year' => 'required|integer|digits:4',
-            'ktp_photo' => 'required|image',
-            'recipient_photo' => 'required|image',
+            'ktp_photo' => 'required|image|max:2048',
+            'recipient_photo' => 'required|image|max:2048',
             'amount' => 'required|integer',
             'notes' => 'nullable|string',
         ]);
@@ -69,6 +70,14 @@ class DistributionController extends Controller
             'recipient_photo' => $recipientPhotoPath,
             'amount' => $param['amount'],
             'notes' => $param['notes'],
+        ]);
+
+        // Save the log
+        $logMessage = "Kamu baru saja mendistribusikan ke " . $recipient->name . " sebesar Rp. " . number_format($param['amount'], 0, ',', '.');
+        Log::create([
+            'user_id' => auth()->id(),
+            'recipient_id' => $param['recipient_id'],
+            'message' => $logMessage,
         ]);
 
         return response()->json([
