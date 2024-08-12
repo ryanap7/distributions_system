@@ -28,12 +28,12 @@ class DistributionController extends Controller
 
         $validator = Validator::make($param, [
             'recipient_id' => 'required|integer',
-            'date' => 'required|date',
-            'stage' => 'required|integer',
-            'year' => 'required|integer|digits:4',
-            'ktp_photo' => 'required|image|max:2048',
-            'recipient_photo' => 'required|image|max:2048',
-            'amount' => 'required|integer',
+            'date' => 'nullable|date',
+            'stage' => 'nullable|integer',
+            'year' => 'nullable|integer|digits:4',
+            'ktp_photo' => 'nullable|image|max|10280',
+            'recipient_photo' => 'nnullable|image|max:10280',
+            'amount' => 'nullable|integer',
             'notes' => 'nullable|string',
         ]);
 
