@@ -28,23 +28,23 @@ class DistributionController extends Controller
 
         $validator = Validator::make($param, [
             'recipient_id' => 'required|integer',
-            'date' => 'nullable|date',
-            'stage' => 'nullable|integer',
-            'year' => 'nullable|integer|digits:4',
+            'date' => 'required|date_format:d-m-Y',
+            'stage' => 'required|integer',
+            'year' => 'required|integer|digits:4',
             'ktp_photo' => 'nullable|image|max|10280',
-            'recipient_photo' => 'nnullable|image|max:10280',
-            'amount' => 'nullable|integer',
-            'notes' => 'nullable|string',
+            'recipient_photo' => 'required|image|max:10280',
+            'amount' => 'required|integer',
+            'notes' => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            return response()
-                ->json([
-                    'message' => 'Bad Request',
-                    'errors' => $validator->errors(),
-                ], Response::HTTP_BAD_REQUEST);
+            return response()->json([
+                'message' => 'Bad Request',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_BAD_REQUEST);
         }
 
+        // Find recipient
         $recipient = Recipient::find($param['recipient_id']);
         if (!$recipient) {
             return response()->json([
@@ -52,16 +52,19 @@ class DistributionController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        if ($request->hasFile('ktp_photo') && !$recipient->ktp_photo) {
+        $ktpPhotoPath = $recipient->ktp_photo;
+        if ($request->hasFile('ktp_photo')) {
             $ktpPhotoPath = $request->file('ktp_photo')->store('/public/ktp');
             $recipient->ktp_photo = $ktpPhotoPath;
             $recipient->save();
-        } else {
-            $ktpPhotoPath = $recipient->ktp_photo;
         }
 
-        $recipientPhotoPath = $request->file('recipient_photo')->store('/public/recipient');
+        // Handle recipient photo upload
+        if ($request->hasFile('recipient_photo')) {
+            $recipientPhotoPath = $request->file('recipient_photo')->store('/public/recipient');
+        }
 
+        // Create distribution record
         $distribution = Distribution::create([
             'recipient_id' => $param['recipient_id'],
             'date' => $param['date'],
