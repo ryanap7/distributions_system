@@ -34,6 +34,7 @@ class RecipientResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('nik')
+                    ->label('NIK')
                     ->required()
                     ->unique('App\Models\Recipient', 'nik', ignoreRecord: true)
                     ->maxLength(16),
@@ -61,6 +62,7 @@ class RecipientResource extends Resource
                     // ->disabled(fn (Get $get) => $get('district_id') === null)
                     ->required(),
                 Forms\Components\FileUpload::make('ktp_photo')
+                    ->label('Foto KTP')
                     ->columnSpanFull()
                     ->disk('public')
                     ->directory('ktp')

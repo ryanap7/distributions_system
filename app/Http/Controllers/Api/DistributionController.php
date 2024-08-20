@@ -29,7 +29,7 @@ class DistributionController extends Controller
         $validator = Validator::make($param, [
             'recipient_id' => 'required|integer',
             'date' => 'required|date_format:d-m-Y',
-            'stage' => 'required|integer',
+            'stage' => 'required|string',
             'year' => 'required|integer|digits:4',
             'ktp_photo' => 'nullable|image|max:10280',
             'recipient_photo' => 'required|image|max:10280',
@@ -64,12 +64,15 @@ class DistributionController extends Controller
             $recipientPhotoPath = $request->file('recipient_photo')->store('/public/recipient');
         }
 
+        // Convert stage to integer
+        $stage = (int) $param['stage'];
+
         // Create distribution record
         $distribution = Distribution::create([
             'recipient_id' => $param['recipient_id'],
             'date' => $param['date'],
             'year' => $param['year'],
-            'stage' => $param['stage'],
+            'stage' => $stage,
             'recipient_photo' => $recipientPhotoPath,
             'amount' => $param['amount'],
             'notes' => $param['notes'],
