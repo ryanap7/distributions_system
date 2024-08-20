@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use App\Models\District;
 use Filament\Forms\Form;
@@ -11,10 +10,7 @@ use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\DistrictResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\DistrictResource\RelationManagers;
 use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
 
@@ -26,6 +22,10 @@ class DistrictResource extends Resource
 
     protected static ?string $modelLabel = 'Kecamatan';
 
+    protected static ?string $navigationGroup = 'Data Master';
+
+    protected static ?int $navigationSort = 2;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -34,7 +34,7 @@ class DistrictResource extends Resource
                 TextInput::make('name')->label('Nama Kecamatan')
                     ->live()
                     ->lazy()
-                    ->afterStateUpdated(fn (Set $set, string $state) => $set('slug', Str::slug($state)))
+                    ->afterStateUpdated(fn(Set $set, string $state) => $set('slug', Str::slug($state)))
                     ->required()
                     ->maxLength(100),
                 Hidden::make('slug')

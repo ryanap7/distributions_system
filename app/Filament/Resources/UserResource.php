@@ -21,7 +21,6 @@ use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Resources\UserResource\Pages;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
@@ -31,7 +30,7 @@ class UserResource extends Resource
 
     protected static ?string $modelLabel = 'Akun Pengguna';
 
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'User Management';
 
     protected static ?int $navigationSort = 6;
 
@@ -93,7 +92,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Role')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         Roles::SUPER_ADMIN => 'primary',
                         Roles::ADMIN => 'success',
                         Roles::PERANGKAT_DESA => 'warning',
@@ -156,7 +155,7 @@ class UserResource extends Resource
                                 ->required()
                                 ->minLength(6)
                                 ->maxLength(30),
-                        ])->action(fn (Model $record, array $data) => static::changePassword($record, $data)),
+                        ])->action(fn(Model $record, array $data) => static::changePassword($record, $data)),
 
                     Tables\Actions\EditAction::make()
                         ->mutateRecordDataUsing(function (array $data): array {

@@ -16,7 +16,6 @@ use App\Models\Distribution;
 use Filament\Resources\Resource;
 use App\Filament\Resources\DistributionResource\Pages;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 class DistributionResource extends Resource
@@ -26,6 +25,10 @@ class DistributionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $modelLabel = 'Distribusi';
+
+    protected static ?string $navigationGroup = 'Transaksi';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

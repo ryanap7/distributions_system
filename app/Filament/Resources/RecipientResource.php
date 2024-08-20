@@ -22,9 +22,11 @@ class RecipientResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?int $navigationSort = 5;
-
     protected static ?string $modelLabel = 'Penerima Bantuan';
+
+    protected static ?string $navigationGroup = 'User Management';
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

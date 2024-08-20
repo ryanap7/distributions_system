@@ -25,6 +25,10 @@ class VillageResource extends Resource
 
     protected static ?string $modelLabel = 'Desa';
 
+    protected static ?string $navigationGroup = 'Data Master';
+
+    protected static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -39,7 +43,7 @@ class VillageResource extends Resource
                 TextInput::make('name')
                     ->live()
                     ->lazy()
-                    ->afterStateUpdated(fn (Set $set, string $state) => $set('slug', Str::slug($state)))
+                    ->afterStateUpdated(fn(Set $set, string $state) => $set('slug', Str::slug($state)))
                     ->label('Nama Desa')->required()->maxLength(100),
                 Hidden::make('slug')
             ]);
