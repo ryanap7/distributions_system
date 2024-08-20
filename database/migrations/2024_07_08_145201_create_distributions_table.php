@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('recipient_id')->index()->references('id')->on('recipients')->onDelete('cascade');;
             $table->dateTime('date');
             $table->year('year');
-            $table->integer('stage');
+            $table->string('stage');
             $table->string('recipient_photo');
             $table->unsignedBigInteger('amount');
             $table->text('notes')->nullable();

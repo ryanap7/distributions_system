@@ -15,7 +15,9 @@ use Filament\Support\RawJs;
 use App\Models\Distribution;
 use Filament\Resources\Resource;
 use App\Filament\Resources\DistributionResource\Pages;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class DistributionResource extends Resource
 {
@@ -103,7 +105,7 @@ class DistributionResource extends Resource
                     ->dateTime('d F Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('year')->label('Tahun')->sortable(),
-                Tables\Columns\TextColumn::make('stage')
+                Tables\Columns\TextColumn::make('village_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
@@ -120,31 +122,60 @@ class DistributionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('district_id')
-                    ->label('Kecamatan')
-                    ->preload()
-                    ->searchable()
-                    ->options(District::query()->pluck('name', 'id'))
-                    ->query(function ($query, $data) {
-                        if ($data['value']) {
-                            $query->whereHas('recipient', function ($qu) use ($data) {
-                                $qu->whereHas('village', function ($q) use ($data) {
-                                    $q->where('district_id', $data['value']);
-                                });
-                            });
+                Filter::make('village_id')
+                    ->form([
+                        Forms\Components\Select::make('district_id')
+                            ->label('Kecamatan')
+                            ->options(District::query()->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(function ($set, $state) {
+                                $set('village_id', null);
+                            }),
+                        Forms\Components\Select::make('village_id')
+                            ->label('Desa')
+                            ->options(function ($get) {
+                                if (!$get('district_id')) {
+                                    return [];
+                                }
+                                return Village::query()->where('district_id', $get('district_id'))->pluck('name', 'id');
+                            })
+                            ->searchable()
+                            ->preload()
+                            ->live(),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['district_id'],
+                                fn(Builder $query, $search): Builder => $query->when($search, function ($qq) use ($search) {
+                                    $qq->whereHas('village', function ($q) use ($search) {
+                                        $q->where('district_id', $search);
+                                    });
+                                }),
+                            )
+                            ->when(
+                                $data['village_id'],
+                                fn(Builder $query, $search): Builder => $query->where('village_id', $search),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['district_id'] ?? null) {
+
+                            $district = District::find($data['district_id']);
+
+                            $indicators['district_id'] = 'Kecamatan: ' .  $district->name;
                         }
-                    }),
-                SelectFilter::make('village')
-                    ->label('Desa')
-                    ->preload()
-                    ->searchable()
-                    ->options(District::query()->pluck('name', 'id'))
-                    ->query(function ($query, $data) {
-                        if ($data['value']) {
-                            $query->whereHas('recipient', function ($qu) use ($data) {
-                                $qu->where('village_id', $data['value']);
-                            });
+
+                        if ($data['village_id'] ?? null) {
+                            $village = Village::find($data['village_id']);
+
+                            $indicators['village_id'] = 'Desa: ' . $village->name;
                         }
+
+                        return $indicators;
                     })
             ])
             ->actions([
