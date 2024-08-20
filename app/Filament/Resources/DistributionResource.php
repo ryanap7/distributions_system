@@ -157,7 +157,7 @@ class DistributionResource extends Resource
                             )
                             ->when(
                                 $data['village_id'],
-                                fn(Builder $query, $search): Builder => $query->where('village_id', $search),
+                                fn(Builder $query, $search): Builder => $query->where('recipient', $search),
                             );
                     })
                     ->indicateUsing(function (array $data): array {
