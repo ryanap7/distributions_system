@@ -31,7 +31,7 @@ class DistributionController extends Controller
             'date' => 'required|date_format:d-m-Y',
             'stage' => 'required|integer',
             'year' => 'required|integer|digits:4',
-            'ktp_photo' => 'nullable|image|max|10280',
+            'ktp_photo' => 'nullable|image|max:10280',
             'recipient_photo' => 'required|image|max:10280',
             'amount' => 'required|integer',
             'notes' => 'required|string',
