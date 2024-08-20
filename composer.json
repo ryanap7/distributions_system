@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.1",
         "ariaieboy/filament-currency": "^1.1",
+        "barryvdh/laravel-dompdf": "^3.0",
         "bensampo/laravel-enum": "^6.6",
         "bezhansalleh/filament-shield": "^3.0",
         "filament/filament": "^3.0-stable",

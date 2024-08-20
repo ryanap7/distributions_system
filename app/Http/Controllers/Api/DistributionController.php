@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Models\Distribution;
+use App\Models\District;
 use App\Models\Log;
 use App\Models\Recipient;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class DistributionController extends Controller
@@ -195,5 +199,60 @@ class DistributionController extends Controller
                 'recipient_count' => $recipientCount,
             ]
         ], Response::HTTP_OK);
+    }
+
+    public function generateReport(Request $request)
+    {
+        // Validate request parameters
+        $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'district_id' => 'nullable|exists:districts,id',
+        ]);
+
+        // Query dasar
+        $query = Distribution::with(['recipient', 'village.district']);
+
+        // Filter berdasarkan tanggal
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        }
+
+        // Filter berdasarkan kecamatan
+        if ($request->filled('district_id')) {
+            $query->whereHas('village', function ($q) use ($request) {
+                $q->where('district_id', $request->district_id);
+            });
+        }
+
+        // Ambil data sesuai query
+        $distributions = $query->get();
+
+        // Generate PDF
+        $pdf = Pdf::loadView('filament.pages.pdf', compact('distributions'));
+
+        $districtName = $request->filled('district_id') ? District::find($request->district_id)->name : 'SemuaKecamatan';
+        $startDate = $request->filled('start_date') ? Carbon::parse($request->start_date)->format('Ymd') : 'TanggalAwal';
+        $endDate = $request->filled('end_date') ? Carbon::parse($request->end_date)->format('Ymd') : 'TanggalAkhir';
+
+        // Format nama file
+        $filename = "Laporan-{$districtName}-{$startDate}-{$endDate}.pdf";
+
+        // Save PDF to storage
+        $path = 'public/reports/' . $filename;
+        Storage::put($path, $pdf->output());
+
+        // Generate URL for the stored file
+        $fileUrl = url('storage/reports/' . $filename);
+
+        $response = [
+            'message' => 'Success',
+            'data' => [
+                'url' => $fileUrl
+            ],
+        ];
+
+        // Return URL for the PDF file
+        return response()->json($response);
     }
 }

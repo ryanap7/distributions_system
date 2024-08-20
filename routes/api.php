@@ -22,9 +22,11 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::get('/public/recipients', [RecipientController::class, 'getAll']);
 Route::get('/public/distributions', [DistributionController::class, 'getAll']);
+Route::get('/public/distributions/report', [DistributionController::class, 'generateReport']);
 
 Route::get('/public/announcement', [SettingController::class, 'getAnnouncement']);
 Route::get('/public/contact', [SettingController::class, 'getContact']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
