@@ -152,15 +152,17 @@ class DistributionResource extends Resource
                         return $query
                             ->when(
                                 $data['district_id'],
-                                fn(Builder $query, $search): Builder => $query->when($search, function ($qq) use ($search) {
-                                    $qq->whereHas('village', function ($q) use ($search) {
-                                        $q->where('district_id', $search);
+                                fn(Builder $query, $districtId): Builder => $query->when($districtId, function ($qq) use ($districtId) {
+                                    $qq->whereHas('village', function ($q) use ($districtId) {
+                                        $q->where('district_id', $districtId);
                                     });
                                 }),
                             )
                             ->when(
                                 $data['village_id'],
-                                fn(Builder $query, $search): Builder => $query->where('recipient_id', $search),
+                                fn(Builder $query, $villageId): Builder => $query->whereHas('village', function ($q) use ($villageId) {
+                                    $q->where('id', $villageId);
+                                }),
                             );
                     })
                     ->indicateUsing(function (array $data): array {
