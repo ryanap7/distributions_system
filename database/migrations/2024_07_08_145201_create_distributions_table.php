@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('distributions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('recipient_id')->index()->references('id')->on('recipients')->onDelete('cascade');;
+            $table->foreignId('recipient_id')
+                ->index()
+                ->references('id')
+                ->on('recipients')
+                ->onDelete('cascade');;
             $table->dateTime('date');
             $table->year('year');
             $table->string('stage');
