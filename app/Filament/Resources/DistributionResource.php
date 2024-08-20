@@ -104,8 +104,11 @@ class DistributionResource extends Resource
                     ->label('Tanggal')
                     ->dateTime('d F Y')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('year')->label('Tahun')->sortable(),
-                Tables\Columns\TextColumn::make('village_id')
+                Tables\Columns\TextColumn::make('stage')
+                    ->label('Tahap')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('village.name')
+                    ->label('Desa')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
