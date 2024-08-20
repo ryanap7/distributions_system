@@ -17,7 +17,7 @@ class DistributionController extends Controller
     {
         $perPage = $request->query('per_page', 20);
 
-        $distributions = Distribution::paginate($perPage);
+        $distributions = Distribution::with('recipient')->paginate($perPage);
 
         $paginationInfo = [
             'count' => $distributions->total(),
