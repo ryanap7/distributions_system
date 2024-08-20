@@ -13,6 +13,34 @@ use Illuminate\Support\Facades\Validator;
 
 class DistributionController extends Controller
 {
+    public function getAll(Request $request): JsonResponse
+    {
+        $perPage = $request->query('per_page', 20);
+
+        $distributions = Distribution::paginate($perPage);
+
+        $paginationInfo = [
+            'count' => $distributions->total(),
+            'pages' => $distributions->lastPage(),
+        ];
+
+        $nextPageUrl = $distributions->appends($request->except('page'))->nextPageUrl();
+        $prevPageUrl = $distributions->previousPageUrl();
+
+        $response = [
+            'message' => 'Success',
+            'data' => $distributions->items(),
+            'info' => [
+                'count' => $paginationInfo['count'],
+                'pages' => $paginationInfo['pages'],
+                'next' => $nextPageUrl,
+                'prev' => $prevPageUrl,
+            ],
+        ];
+
+        return response()->json($response);
+    }
+
     function create(Request $request): JsonResponse
     {
         $param = $request->only([
