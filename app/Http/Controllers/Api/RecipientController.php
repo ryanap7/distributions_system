@@ -47,7 +47,7 @@ class RecipientController extends Controller
 
     public function getAll(Request $request): JsonResponse
     {
-        $perPage = $request->query('per_page', 10);
+        $perPage = $request->query('per_page', 20);
 
         $recipients = Recipient::paginate($perPage);
 
