@@ -44,4 +44,32 @@ class RecipientController extends Controller
 
         return response()->json($response);
     }
+
+    public function getAll(Request $request): JsonResponse
+    {
+        $perPage = $request->query('per_page', 10);
+
+        $recipients = Recipient::paginate($perPage);
+
+        $paginationInfo = [
+            'count' => $recipients->total(),
+            'pages' => $recipients->lastPage(),
+        ];
+
+        $nextPageUrl = $recipients->appends($request->except('page'))->nextPageUrl();
+        $prevPageUrl = $recipients->previousPageUrl();
+
+        $response = [
+            'message' => 'Success',
+            'data' => $recipients->items(),
+            'info' => [
+                'count' => $paginationInfo['count'],
+                'pages' => $paginationInfo['pages'],
+                'next' => $nextPageUrl,
+                'prev' => $prevPageUrl,
+            ],
+        ];
+
+        return response()->json($response);
+    }
 }
