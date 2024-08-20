@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DistributionController;
+use App\Http\Controllers\Api\DistrictController;
 use App\Http\Controllers\Api\LogController;
 use App\Http\Controllers\Api\RecipientController;
 use App\Http\Controllers\Api\SettingController;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+Route::get('/public/districts', [DistrictController::class, 'index']);
 Route::get('/public/recipients', [RecipientController::class, 'getAll']);
 Route::get('/public/distributions', [DistributionController::class, 'getAll']);
 Route::get('/public/distributions/report', [DistributionController::class, 'generateReport']);
