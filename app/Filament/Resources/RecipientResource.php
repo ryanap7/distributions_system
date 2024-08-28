@@ -79,18 +79,18 @@ class RecipientResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(['name']),
                 Tables\Columns\TextColumn::make('nik')
                     ->label('NIK')
-                    ->searchable(),
+                    ->searchable(['nik']),
                 Tables\Columns\TextColumn::make('district.name')
                     ->label('Kecamatan')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(['districts.name']),
                 Tables\Columns\TextColumn::make('village.name')
                     ->label('Desa')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(['villages.name']),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat pada')
                     ->dateTime()
