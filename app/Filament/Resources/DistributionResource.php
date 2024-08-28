@@ -37,7 +37,6 @@ class DistributionResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('district_id')
-                    ->disabled()
                     ->label('Kecamatan')
                     ->searchable()
                     ->live()
@@ -47,7 +46,6 @@ class DistributionResource extends Resource
                     })
                     ->options(District::query()->pluck('name', 'id')),
                 Forms\Components\Select::make('village_id')
-                    ->disabled()
                     ->label('Desa')
                     ->searchable()
                     ->live()
@@ -63,7 +61,6 @@ class DistributionResource extends Resource
                         return [];
                     }),
                 Forms\Components\Select::make('recipient_id')
-                    ->disabled()
                     ->label('Penerima')
                     ->preload()
                     ->searchable()
@@ -76,19 +73,20 @@ class DistributionResource extends Resource
                     })
                     ->required(),
                 Forms\Components\DatePicker::make('date')
-                    ->disabled()
+                    ->label('Tanggal')
                     ->native(false)
                     ->format('d-m-Y')
                     ->required(),
                 Forms\Components\TextInput::make('year')
-                    ->disabled()
+                    ->label('Tahun')
                     ->required(),
                 Forms\Components\TextInput::make('stage')
-                    ->disabled()
+                    ->label('Tahap')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('amount')
                     ->required()
+                    ->label('Total')
                     ->columnSpanFull()
                     ->prefix('Rp. ')
                     ->mask(RawJs::make('$money($input, `,`)'))
