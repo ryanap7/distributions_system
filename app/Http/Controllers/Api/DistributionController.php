@@ -9,6 +9,7 @@ use App\Models\Distribution;
 use App\Models\District;
 use App\Models\Log;
 use App\Models\Recipient;
+use App\Models\Village;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -17,6 +18,59 @@ use Illuminate\Support\Facades\Validator;
 
 class DistributionController extends Controller
 {
+    /**
+     * Get all sub-districts (kecamatan).
+     *
+     * @return JsonResponse
+     */
+    public function getAllDistricts(): JsonResponse
+    {
+        $districts = District::all();
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $districts,
+        ], 200);
+    }
+
+    /**
+     * Get all villages (desa) by district ID (kecamatan_id).
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getVillagesByDistrictId(Request $request): JsonResponse
+    {
+        $districtId = $request->query('district_id');
+
+        if (!$districtId) {
+            return response()->json([
+                'message' => 'Parameter district_id diperlukan',
+            ], 400);
+        }
+
+        // Validate if district_id is an integer
+        if (!is_numeric($districtId) || $districtId <= 0) {
+            return response()->json([
+                'message' => 'Parameter district_id harus berupa angka positif',
+            ], 400);
+        }
+
+        // Fetch villages based on district_id
+        $villages = Village::where('district_id', $districtId)->get();
+
+        if ($villages->isEmpty()) {
+            return response()->json([
+                'message' => 'Tidak ada desa ditemukan untuk district_id ini',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $villages,
+        ], 200);
+    }
+
     public function getAll(Request $request): JsonResponse
     {
         $perPage = $request->query('per_page', 20);

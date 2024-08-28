@@ -23,6 +23,8 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::get('/public/districts', [DistrictController::class, 'index']);
 Route::get('/public/recipients', [RecipientController::class, 'getAll']);
+Route::get('/public/districts', [DistributionController::class, 'getAllDistricts']);
+Route::get('/public/villages', [DistributionController::class, 'getVillagesByDistrictId']);
 Route::get('/public/distributions', [DistributionController::class, 'getAll']);
 Route::get('/public/distributions/report', [DistributionController::class, 'generateReport']);
 
