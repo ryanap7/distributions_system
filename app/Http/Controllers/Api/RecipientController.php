@@ -47,7 +47,11 @@ class RecipientController extends Controller
 
     public function getAll(Request $request): JsonResponse
     {
-        $recipients = Recipient::all();
+        // Ambil parameter village_id dari request
+        $villageId = $request->query('village_id');
+
+        // Jika village_id ada, filter berdasarkan village_id, jika tidak ambil semua data
+        $recipients = $villageId ? Recipient::where('village_id', $villageId)->get() : Recipient::all();
 
         $response = [
             'message' => 'Success',
